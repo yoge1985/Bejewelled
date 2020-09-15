@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class Grid {
 
     private char[][]grid;
@@ -7,21 +5,18 @@ public class Grid {
     public Grid(int height, int width) {
         this.grid = new char[height][width];
         fillBoard();
-        for (char[] row : grid) {
-            System.out.println(Arrays.toString(row).replace('[', ' ').replace(']', ' '));
-        }
+
     }
 
     //fills the board with random gems overwriting whatever is in the board
     public void fillBoard() {
+        int height = grid.length;
+        int width = grid[0].length;
 
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid.length; j++) {
-                if (grid[i][j] == 0) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
                     grid[i][j] = getRandomGem();
-                }
             }
-
         }
     }
 
@@ -35,6 +30,16 @@ public class Grid {
 
     @Override
     public String toString() {
-        return Arrays.toString(grid);
+        String gridPrint = "";
+        int height = grid.length;
+        int width = grid[0].length;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                gridPrint += grid[i][j];
+            }
+            gridPrint += "\n";
+        }
+        return gridPrint;
     }
+
 }
