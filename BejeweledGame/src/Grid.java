@@ -1,31 +1,30 @@
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Grid {
 
-    private char[][]grid;
+    private char[][] board;
+    private Grid gridClass;
 
     public Grid(int height, int width) {
-        this.grid = new char[height][width];
+        this.board = new char[height][width];
         fillBoard();
     }
 
-    public Grid(char[][] anotherGrid) {
-        this.grid = createGrid();
+    public Grid(char[][] anotherGrid,String file){
+        gridClass = createGrid(file);
 
     }
 
     //fills the board with random gems overwriting whatever is in the board
     public void fillBoard() {
-        int height = grid.length;
-        int width = grid[0].length;
+        int height = board.length;
+        int width = board[0].length;
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                    grid[i][j] = getRandomGem();
+                    board[i][j] = getRandomGem();
             }
         }
     }
@@ -41,11 +40,11 @@ public class Grid {
     @Override
     public String toString() {
         String gridPrint = "";
-        int height = grid.length;
-        int width = grid[0].length;
+        int height = board.length;
+        int width = board[0].length;
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                gridPrint += grid[i][j];
+                gridPrint += board[i][j];
             }
             gridPrint += "\n";
         }
@@ -53,7 +52,8 @@ public class Grid {
     }
 
     public Grid createGrid(String fileName){
-        Grid grid = new Grid(grid);
+        char[][]gemsBoard = null;
+        Grid grid = new Grid(gemsBoard,fileName);
         int pos = 0;
         try {
             File file = new File(fileName);
@@ -62,34 +62,35 @@ public class Grid {
                 pos++;
                 char gem = scanner.next().charAt(pos);
                 String gridPrint = "";
-                int height = grid.length;
-                int width = grid[0].length;
+                int height = gemsBoard.length;
+                int width = gemsBoard[0].length;
                 for (int i = 0; i < height; i++) {
                     for (int j = 0; j < width; j++) {
-                        gem += grid[i][j];
+                        gem += gemsBoard[i][j];
                     }
                     gridPrint += "\n";
                 }
             }
 
-
         }catch (IOException e){
             System.out.println("no dimensions to read");
         }
-        return place;
-
+        return grid;
     }
-    private String printCharMatrix(){
-        String gridPrint = "";
-        int height = grid.length;
-        int width = grid[0].length;
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                gridPrint += grid[i][j];
+
+    public void save(String filename){
+        try {
+            String saveInfo = "";
+            for (int i = 0; i < this.board.length; i++){
+                for (int j = 0; j < this.board[0].length; j++){
+                    saveInfo += board[i][j] + "";
+                }
+                saveInfo += "\n";
             }
-            gridPrint += "\n";
+        }catch (Exception e){
+            System.out.println("could not save!");
+            
         }
-        return gridPrint;
 
     }
 
