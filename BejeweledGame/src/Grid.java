@@ -1,21 +1,20 @@
-import java.io.File;
-import java.io.IOException;
-import java.util.Scanner;
+import java.io.FileWriter;
 
 public class Grid {
 
     private char[][] board;
     private Grid gridClass;
 
+    public Grid(char[][] anotherGrid){
+
+    }
+
     public Grid(int height, int width) {
         this.board = new char[height][width];
         fillBoard();
     }
 
-    public Grid(char[][] anotherGrid,String file){
-        gridClass = createGrid(file);
 
-    }
 
     //fills the board with random gems overwriting whatever is in the board
     public void fillBoard() {
@@ -50,48 +49,45 @@ public class Grid {
         }
         return gridPrint;
     }
+//    //displays the current gems board saved in a file
+//    public Grid createGrid(String fileName){
+//        int rows = 4;
+//        int columns = 4;
+//        char [][] myArray = new char[rows][columns];
+//        try {
+//        Scanner sc = new Scanner(new BufferedReader(new BufferedReader(new FileReader(fileName))));
+//        while(sc.hasNextLine()) {
+//                String line = sc.nextLine();
+//                for (int j=0; j<line.length(); j++) {
+//                    myArray[i][j] = line.charAt(j);
+//                }
+//
+//        }
+//        System.out.println(Arrays.deepToString(myArray));
+//    }catch (Exception e){
+//            System.out.println("could not find file");
+//        }
+//        return
+//
+//    }
 
-    public Grid createGrid(String fileName){
-        char[][]gemsBoard = null;
-        Grid grid = new Grid(gemsBoard,fileName);
-        int pos = 0;
-        try {
-            File file = new File(fileName);
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()){
-                pos++;
-                char gem = scanner.next().charAt(pos);
-                String gridPrint = "";
-                int height = gemsBoard.length;
-                int width = gemsBoard[0].length;
-                for (int i = 0; i < height; i++) {
-                    for (int j = 0; j < width; j++) {
-                        gem += gemsBoard[i][j];
-                    }
-                    gridPrint += "\n";
-                }
-            }
-
-        }catch (IOException e){
-            System.out.println("no dimensions to read");
-        }
-        return grid;
-    }
-
+    //saves the current gems board to a file
     public void save(String filename){
         try {
-            String saveInfo = "";
+            FileWriter fw = new FileWriter(filename);
+            char text = ' ';
             for (int i = 0; i < this.board.length; i++){
                 for (int j = 0; j < this.board[0].length; j++){
-                    saveInfo += board[i][j] + "";
+                    text = board[i][j];
+                    fw.write(text);
                 }
-                saveInfo += "\n";
+                fw.write("\n");
             }
+            fw.close();
         }catch (Exception e){
             System.out.println("could not save!");
-            
-        }
 
+        }
     }
 
 }
