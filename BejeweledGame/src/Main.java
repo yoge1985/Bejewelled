@@ -5,8 +5,10 @@ public class Main {
         Grid grid = new Grid(5,5);
         System.out.println(grid);
         grid.save("C:\\Users\\family gefen\\Downloads\\Maze.txt");
-//        grid.createGrid("C:\\Users\\family gefen\\Downloads\\Maze.txt");
-
+        System.out.println("============================================");
+        System.out.println(grid.createGrid("C:\\Users\\family gefen\\Downloads\\Maze.txt"));
+        System.out.println("======================================");
+        System.out.println(grid.extractRow(6));
 
     }
 }

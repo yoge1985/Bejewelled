@@ -1,28 +1,39 @@
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Scanner;
 
 public class Grid {
 
-    private char[][] board;
-    private Grid gridClass;
+//    private int column;
+//    private int row;
+    private char[][]board;
 
-    public Grid(char[][] anotherGrid){
-
-    }
-
-    public Grid(int height, int width) {
-        this.board = new char[height][width];
+    public Grid(int column, int row) {
+//        this.column = column;
+//        this.row = row;
+        board = new char[column][row];
         fillBoard();
     }
 
-
+    public Grid(char[][] anotherGrid){
+        board = anotherGrid;
+    }
+//
+//    public int getHeight() {
+//        return column;
+//    }
+//
+//    public int getWidth() {
+//        return row;
+//    }
 
     //fills the board with random gems overwriting whatever is in the board
     public void fillBoard() {
-        int height = board.length;
-        int width = board[0].length;
 
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
+        for (int i = 0; i < this.board.length; i++) {
+            for (int j = 0; j < this.board[0].length; j++) {
                     board[i][j] = getRandomGem();
             }
         }
@@ -39,45 +50,61 @@ public class Grid {
     @Override
     public String toString() {
         String gridPrint = "";
-        int height = board.length;
-        int width = board[0].length;
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
                 gridPrint += board[i][j];
             }
             gridPrint += "\n";
         }
         return gridPrint;
     }
-//    //displays the current gems board saved in a file
-//    public Grid createGrid(String fileName){
-//        int rows = 4;
-//        int columns = 4;
-//        char [][] myArray = new char[rows][columns];
-//        try {
-//        Scanner sc = new Scanner(new BufferedReader(new BufferedReader(new FileReader(fileName))));
-//        while(sc.hasNextLine()) {
-//                String line = sc.nextLine();
-//                for (int j=0; j<line.length(); j++) {
-//                    myArray[i][j] = line.charAt(j);
-//                }
-//
-//        }
-//        System.out.println(Arrays.deepToString(myArray));
-//    }catch (Exception e){
-//            System.out.println("could not find file");
-//        }
-//        return
-//
-//    }
+    //displays the current gems board saved in a file
+    public Grid createGrid(String fileName) {
+
+        char[][] myArray;
+
+        Grid grid = null;
+        try {
+            Scanner scanner = new Scanner(new FileReader(fileName));
+            int column = scanner.nextInt();
+            int row = scanner.nextInt();
+            myArray = new char[column][row];
+            scanner.nextLine();
+            int i = 0;
+            while (scanner.hasNextLine()) {
+
+                String line = scanner.nextLine();
+
+                for (int j = 0; j < row; j++) {
+                    char letter = line.charAt(j);
+
+                    myArray[i][j] = letter;
+
+                }
+                i++;
+
+            }
+            grid = new Grid(myArray);
+        } catch (Exception e) {
+            if (board.length <= 0) {
+                System.out.println("there are no dimensions to read");
+            }
+        }
+        return grid;
+    }
 
     //saves the current gems board to a file
     public void save(String filename){
         try {
             FileWriter fw = new FileWriter(filename);
             char text = ' ';
-            for (int i = 0; i < this.board.length; i++){
-                for (int j = 0; j < this.board[0].length; j++){
+            int column = board.length;
+            int row = board[0].length;
+            fw.write(column + "" + " " + row + "" + "\n");
+
+            for (int i = 0; i < column; i++){
+                for (int j = 0; j < row; j++){
                     text = board[i][j];
                     fw.write(text);
                 }
@@ -88,6 +115,31 @@ public class Grid {
             System.out.println("could not save!");
 
         }
+    }
+    //extracts specified data from the grid.
+    public char[] extractRow(int rowNum){
+        char[] extractedRow = new char[0];
+        try {
+        String selected = Files.readAllLines(Paths.get("C:\\Users\\family gefen\\Downloads\\Maze.txt")).get(rowNum);
+        extractedRow = selected.toCharArray();
+
+        }catch (Exception e){
+            System.out.println("row " + rowNum + " does not exist");
+        }
+        return extractedRow;
+    }
+
+    public char[] extractColumn(int colNum){
+        char[] extractedRow = new char[0];
+        try {
+
+            extractedRow = selected.toCharArray();
+
+        }catch (Exception e){
+            System.out.println("row " + colNum + " does not exist");
+        }
+        return extractedRow;
+
     }
 
 }
