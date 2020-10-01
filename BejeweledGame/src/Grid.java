@@ -1,6 +1,9 @@
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
+
+import java.util.InputMismatchException;
 import java.util.Scanner;
+
+
 
 public class Grid {
 
@@ -52,15 +55,29 @@ public class Grid {
     }
 
     //displays the current gems board saved in a file
-    public Grid createGrid(String fileName) {
+    public static Grid createGrid(String fileName) throws IOException{
+        int column = 0;
+        int row = 0;
 
-        char[][] myArray;
+        Scanner scanner = null;
+
+        char[][] myArray = null;
 
         Grid grid = null;
         try {
-            Scanner scanner = new Scanner(new FileReader(fileName));
-            int column = scanner.nextInt();
-            int row = scanner.nextInt();
+             scanner = new Scanner(new FileReader(fileName));
+
+        }catch (FileNotFoundException e) {
+            throw new IOException("cannot find file");
+        }
+        try {
+
+            column = scanner.nextInt();
+            row = scanner.nextInt();
+        }catch (InputMismatchException ime) {
+            System.out.println("out of order");
+        }
+
             myArray = new char[column][row];
             scanner.nextLine();
             int i = 0;
@@ -78,11 +95,11 @@ public class Grid {
 
             }
             grid = new Grid(myArray);
-        } catch (Exception e) {
-            if (board.length <= 0) {
+
+            if (myArray.length <= 0) {
                 System.out.println("there are no dimensions to read");
             }
-        }
+
         return grid;
     }
 
