@@ -1,48 +1,39 @@
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Grid {
 
-//    private int column;
-//    private int row;
-    private char[][]board;
+    private char[][] board;
 
     public Grid(int column, int row) {
-//        this.column = column;
-//        this.row = row;
+
         board = new char[column][row];
         fillBoard();
     }
 
-    public Grid(char[][] anotherGrid){
+    public Grid(char[][] anotherGrid) {
         board = anotherGrid;
     }
-//
-//    public int getHeight() {
-//        return column;
-//    }
-//
-//    public int getWidth() {
-//        return row;
-//    }
+
+    public char[][] getBoard() {
+        return board;
+    }
 
     //fills the board with random gems overwriting whatever is in the board
     public void fillBoard() {
 
         for (int i = 0; i < this.board.length; i++) {
             for (int j = 0; j < this.board[0].length; j++) {
-                    board[i][j] = getRandomGem();
+                board[i][j] = getRandomGem();
             }
         }
     }
 
-    public static char[]gems = {'r','g','b', 'y'};
+    public static char[] gems = {'r', 'g', 'b', 'y'};
 
-    public static char getRandomGem(){
-        int choice = (int)(Math.random() * gems.length);
+    public static char getRandomGem() {
+        int choice = (int) (Math.random() * gems.length);
         return gems[choice];
 
     }
@@ -59,6 +50,7 @@ public class Grid {
         }
         return gridPrint;
     }
+
     //displays the current gems board saved in a file
     public Grid createGrid(String fileName) {
 
@@ -95,7 +87,7 @@ public class Grid {
     }
 
     //saves the current gems board to a file
-    public void save(String filename){
+    public void save(String filename) {
         try {
             FileWriter fw = new FileWriter(filename);
             char text = ' ';
@@ -103,43 +95,79 @@ public class Grid {
             int row = board[0].length;
             fw.write(column + "" + " " + row + "" + "\n");
 
-            for (int i = 0; i < column; i++){
-                for (int j = 0; j < row; j++){
+            for (int i = 0; i < column; i++) {
+                for (int j = 0; j < row; j++) {
                     text = board[i][j];
                     fw.write(text);
                 }
                 fw.write("\n");
             }
             fw.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("could not save!");
 
         }
     }
+
     //extracts specified data from the grid.
-    public char[] extractRow(int rowNum){
-        char[] extractedRow = new char[0];
-        try {
-        String selected = Files.readAllLines(Paths.get("C:\\Users\\family gefen\\Downloads\\Maze.txt")).get(rowNum);
-        extractedRow = selected.toCharArray();
+    public char[] extractRow(int rowNum) {
+        rowNum -= 1;
+        char[] selected = new char[1];
 
-        }catch (Exception e){
-            System.out.println("row " + rowNum + " does not exist");
+        try {
+            for (int i = 0; i < this.board.length; i++) {
+                for (int j = 0; j < this.board[0].length; j++) {
+                    selected = board[rowNum];
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("error");
         }
-        return extractedRow;
+        return selected;
     }
 
-    public char[] extractColumn(int colNum){
-        char[] extractedRow = new char[0];
+    public char[] extractColumn(int colNum) {
+
+        colNum -= 1;
+        char[] selected = new char[board[0].length];
+
         try {
+            for (int i = 0; i < this.board.length; i++) {
 
-            extractedRow = selected.toCharArray();
-
-        }catch (Exception e){
-            System.out.println("row " + colNum + " does not exist");
+                selected[i] = board[i][colNum];
+            }
+        } catch (Exception e) {
+            System.out.println("error");
         }
-        return extractedRow;
-
+        return selected;
     }
 
+    //passes a 1d array of gems and checks if there is set of 3 (or more) gems in a row. if yes, then replaces with
+    //new array
+    public static char[] replaceSets(char[] input) {
+        char[] newArray;
+        boolean matchFound = true;
+        int i = 0;
+        int thirdLastCell = input.length-2;
+        while (matchFound && i != thirdLastCell) {
+
+            for (i = 0; i < thirdLastCell; i++) {
+
+                 int j = i + 1;
+
+                if (input[i] == input[j] && input[i] == input[j + 1]) {
+                    newArray = new char[input.length];
+                    for (int k = 0; k < input.length; k++) {
+                        newArray[k] = getRandomGem();
+                        matchFound = false;
+                    }
+                    return newArray;
+                }
+
+            }
+        }
+        return input;
+    }
 }
+
+
