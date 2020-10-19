@@ -1,13 +1,15 @@
-import java.io.*;
-
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
-
 
 
 public class Grid {
 
-    private char[][] board;
+    private static char[][] board;
 
     public Grid(int column, int row) {
 
@@ -55,52 +57,93 @@ public class Grid {
     }
 
     //displays the current gems board saved in a file
-    public static Grid createGrid(String fileName) throws IOException{
+    public static Grid createGrid(String fileName) throws IOException {
         int column = 0;
         int row = 0;
+        int lengthOfFileColumn = 0;
+        int numberOfFileRows = 0;
+        String str = null;
+        int test = 0;
 
         Scanner scanner = null;
 
         char[][] myArray = null;
 
         Grid grid = null;
-        try {
-             scanner = new Scanner(new FileReader(fileName));
+        try {//attempts to retrieve file
+            scanner = new Scanner(new FileReader(fileName));
 
-        }catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             throw new IOException("cannot find file");
         }
-        try {
+        try {//attempts to retrieve number of columns and rows from file
 
-            column = scanner.nextInt();
             row = scanner.nextInt();
-        }catch (InputMismatchException ime) {
-            System.out.println("out of order");
+            column = scanner.nextInt();
+
+        } catch (NoSuchElementException nsee) {
+            if (!scanner.hasNext()) {
+
+                throw new IOException("no dimensions available");
+
+            } else if (!scanner.hasNextInt()) {
+                throw new IOException("size values not numeric");
+                //if stated amount of columns (listed at top of file) is not found in f
+            }
         }
 
-            myArray = new char[column][row];
+        try {
+            while (scanner.hasNext()) {
+                scanner.next();
+                numberOfFileRows++;
+            }
+
+            test = row / numberOfFileRows;
+            test = row / test;
+            test = numberOfFileRows / row;
+            test = row / test;
+
+
+        }catch (ArithmeticException ae){
+            throw new IOException("not enough rows. found " + numberOfFileRows + " require " + row);
+        }
+        //test to see if correct number of columns
+        try {
+            scanner = new Scanner(new FileReader(fileName));
             scanner.nextLine();
-            int i = 0;
-            while (scanner.hasNextLine()) {
+            str = scanner.nextLine();
+            lengthOfFileColumn = str.length();
+            test = column / lengthOfFileColumn;
+            test = column / test;
+            test = lengthOfFileColumn / column;
+            test = column / test;
 
-                String line = scanner.nextLine();
+        } catch (ArithmeticException ae) {
+            throw new IOException("there was not enough columns. found " + lengthOfFileColumn + " require " + column);
+        }
 
-                for (int j = 0; j < row; j++) {
-                    char letter = line.charAt(j);
 
-                    myArray[i][j] = letter;
+        myArray = new char[row][column];
+        int i = 0;
+        scanner = new Scanner(new FileReader(fileName));
+        scanner.nextLine();
 
-                }
-                i++;
+        while (scanner.hasNext()) {
+            str = scanner.nextLine();
+
+            for (int j = 0; j < column; j++) {
+                char letter = str.charAt(j);
+
+                myArray[i][j] = letter;
 
             }
-            grid = new Grid(myArray);
+            i++;
+        }
 
-            if (myArray.length <= 0) {
-                System.out.println("there are no dimensions to read");
-            }
-
-        return grid;
+        if (myArray.length <= 0) {
+            System.out.println("there are no dimensions to read");
+        }
+        return new Grid(myArray);
     }
 
     //saves the current gems board to a file
@@ -126,21 +169,32 @@ public class Grid {
         }
     }
 
-    //extracts specified data from the grid.
-    public char[] extractRow(int rowNum) {
-        rowNum -= 1;
-        char[] selected = new char[1];
+    //prompts user to select row from the grid. 0 = first row etc.
+    public char[] extractRow(int rowNum) throws IOException {
+        System.out.println("select row. 0 = first row etc");
+
+        String selectedRow = "";
+        char[] arrayOfSelectedRow = null;
 
         try {
-            for (int i = 0; i < this.board.length; i++) {
-                for (int j = 0; j < this.board[0].length; j++) {
-                    selected = board[rowNum];
+
+                for (int j = 0; j < board[0].length; j++) {
+                    selectedRow += board[rowNum][j];
                 }
-            }
-        } catch (Exception e) {
-            System.out.println("error");
+
+                // Creating array of string length
+                arrayOfSelectedRow = new char[selectedRow.length()];
+
+                // Copy character by character into array
+                for (int i = 0; i < selectedRow.length(); i++) {
+                    arrayOfSelectedRow[i] = selectedRow.charAt(i);
+                }
+
+
+        } catch (InputMismatchException ime) {
+            throw new IOException("did not enter valid row number");
         }
-        return selected;
+        return arrayOfSelectedRow;
     }
 
     public char[] extractColumn(int colNum) {
@@ -165,12 +219,12 @@ public class Grid {
         char[] newArray;
         boolean matchFound = true;
         int i = 0;
-        int thirdLastCell = input.length-2;
+        int thirdLastCell = input.length - 2;
         while (matchFound && i != thirdLastCell) {
 
             for (i = 0; i < thirdLastCell; i++) {
 
-                 int j = i + 1;
+                int j = i + 1;
 
                 if (input[i] == input[j] && input[i] == input[j + 1]) {
                     newArray = new char[input.length];
