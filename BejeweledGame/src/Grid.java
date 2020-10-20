@@ -2,7 +2,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -104,7 +103,7 @@ public class Grid {
             test = row / test;
 
 
-        }catch (ArithmeticException ae){
+        } catch (ArithmeticException ae) {
             throw new IOException("not enough rows. found " + numberOfFileRows + " require " + row);
         }
         //test to see if correct number of columns
@@ -170,47 +169,46 @@ public class Grid {
     }
 
     //prompts user to select row from the grid. 0 = first row etc.
-    public char[] extractRow(int rowNum) throws IOException {
-        System.out.println("select row. 0 = first row etc");
+    public char[] extractRow(int rowNum) {
 
         String selectedRow = "";
         char[] arrayOfSelectedRow = null;
 
-        try {
 
-                for (int j = 0; j < board[0].length; j++) {
-                    selectedRow += board[rowNum][j];
-                }
-
-                // Creating array of string length
-                arrayOfSelectedRow = new char[selectedRow.length()];
-
-                // Copy character by character into array
-                for (int i = 0; i < selectedRow.length(); i++) {
-                    arrayOfSelectedRow[i] = selectedRow.charAt(i);
-                }
-
-
-        } catch (InputMismatchException ime) {
-            throw new IOException("did not enter valid row number");
+        for (int j = 0; j < board[0].length; j++) {
+            selectedRow += board[rowNum][j];
         }
+
+        // Creating array of string length
+        arrayOfSelectedRow = new char[selectedRow.length()];
+
+        // Copy character by character into array
+        for (int i = 0; i < selectedRow.length(); i++) {
+            arrayOfSelectedRow[i] = selectedRow.charAt(i);
+        }
+
         return arrayOfSelectedRow;
     }
 
+    //select column from the grid. e.g. 0 = first row etc.
     public char[] extractColumn(int colNum) {
 
-        colNum -= 1;
-        char[] selected = new char[board[0].length];
+        String selectedColumn = "";
+        char[] arrayOfSelectedColumn = null;
 
-        try {
-            for (int i = 0; i < this.board.length; i++) {
-
-                selected[i] = board[i][colNum];
-            }
-        } catch (Exception e) {
-            System.out.println("error");
+        for (int i = 0; i < board.length; i++) {
+            selectedColumn += board[i][colNum];
         }
-        return selected;
+
+        // Creating array of string length
+        arrayOfSelectedColumn = new char[selectedColumn.length()];
+
+        // Copy character by character into array
+        for (int i = 0; i < selectedColumn.length(); i++) {
+            arrayOfSelectedColumn[i] = selectedColumn.charAt(i);
+        }
+
+        return arrayOfSelectedColumn;
     }
 
     //passes a 1d array of gems and checks if there is set of 3 (or more) gems in a row. if yes, then replaces with
@@ -239,6 +237,21 @@ public class Grid {
         }
         return input;
     }
+    //uses method 'replaceSets' to replace any 3-in-a-row in the entire grid
+    public  void replaceAll(){
+        char[] checkRow = null;
+        for (int i = 0; i < board[0].length; i++){
+            checkRow = replaceSets(extractRow(i));
+            board[i] = checkRow;
+        }
+        char[] checkColumn = null;
+        for (int i = 0; i < board.length; i++){
+            checkColumn = replaceSets(extractColumn(i));
+            board[i] = checkColumn;
+        }
+
+    }
+
 }
 
 
